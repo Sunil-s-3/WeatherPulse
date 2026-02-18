@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Waves, Thermometer, Wind, Eye, AlertCircle } from 'lucide-react';
 import WeatherCard, { DataRow } from './WeatherCard';
+import Loader from './Loader';
 import { getMarineWeather } from '../services/api';
 
-export default function MarineWeather({ onError }) {
+export default function MarineWeather() {
   const [lat, setLat] = useState('');
   const [lon, setLon] = useState('');
   const [data, setData] = useState(null);
@@ -36,7 +38,6 @@ export default function MarineWeather({ onError }) {
     } catch (err) {
       const message = err.response?.data?.error?.info || err.message || 'Something went wrong';
       setError(message);
-      onError?.(message);
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,10 @@ export default function MarineWeather({ onError }) {
       className="space-y-6"
     >
       <WeatherCard className="p-6">
-        <h3 className="text-white font-semibold mb-4">Enter Coordinates</h3>
+        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+          <Waves className="w-5 h-5 text-cyan-400" />
+          Enter Coordinates
+        </h3>
         <div className="flex flex-col sm:flex-row gap-4">
           <input
             type="text"
@@ -80,18 +84,15 @@ export default function MarineWeather({ onError }) {
         </div>
       </WeatherCard>
 
-      {loading && (
-        <div className="flex justify-center py-12">
-          <div className="w-12 h-12 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
-        </div>
-      )}
+      {loading && <Loader message="Fetching marine conditions..." />}
 
       {error && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="backdrop-blur-lg bg-red-500/20 border border-red-500/30 rounded-2xl p-6 text-center"
+          className="backdrop-blur-lg bg-red-500/20 border border-red-500/30 rounded-2xl p-6 flex items-center gap-3"
         >
+          <AlertCircle className="w-6 h-6 text-red-400 flex-shrink-0" />
           <p className="text-red-400">{error}</p>
         </motion.div>
       )}
@@ -104,10 +105,11 @@ export default function MarineWeather({ onError }) {
           <WeatherCard className="p-6">
             <h3 className="text-white font-semibold mb-4">Marine Conditions</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DataRow label="Wave Height" value={`${marine?.swell_height_m ?? marine?.swell_height ?? '--'} m`} icon="🌊" />
-              <DataRow label="Water Temperature" value={`${marine?.water_temp ?? '--'}°C`} icon="🌡️" />
-              <DataRow label="Wind Speed" value={`${marine?.wind_speed ?? '--'} km/h`} icon="💨" />
-              <DataRow label="Visibility" value={`${marine?.visibility ?? '--'} km`} icon="👁️" />
+              <DataRow label="Wave Height" value={`${marine?.swell_height_m ?? marine?.swell_height ?? '--'} m`} icon={Waves} />
+              <DataRow label="Water Temperature" value={`${marine?.water_temp ?? '--'}°C`} icon={Thermometer} />
+              <DataRow label="Wind Speed" value={`${marine?.wind_speed ?? '--'} km/h`} icon={Wind} />
+              <DataRow label="Visibility" value={`${marine?.visibility ?? '--'} km`} icon={Eye} />
+              <DataRow label="Weather Description" value={marine?.weather_description ?? '--'} />
             </div>
           </WeatherCard>
         </motion.div>

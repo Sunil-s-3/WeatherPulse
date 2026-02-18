@@ -1,20 +1,11 @@
 import { motion } from 'framer-motion';
+import { Droplets, Wind, Gauge, AlertCircle } from 'lucide-react';
 import WeatherCard, { TempDisplay, DataRow } from './WeatherCard';
+import Loader from './Loader';
 
 export default function CurrentWeather({ data, loading, error }) {
   if (loading) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex items-center justify-center min-h-[400px]"
-      >
-        <div className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl p-12">
-          <div className="w-12 h-12 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-white/80">Loading weather data...</p>
-        </div>
-      </motion.div>
-    );
+    return <Loader message="Loading weather data..." />;
   }
 
   if (error) {
@@ -22,10 +13,11 @@ export default function CurrentWeather({ data, loading, error }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="backdrop-blur-lg bg-white/10 border border-red-500/30 rounded-2xl p-8 text-center"
+        className="backdrop-blur-lg bg-white/10 border border-red-500/30 rounded-2xl p-8 flex flex-col items-center gap-3"
       >
-        <p className="text-red-400 text-lg font-medium mb-2">Unable to load weather</p>
-        <p className="text-white/70 text-sm">{error}</p>
+        <AlertCircle className="w-12 h-12 text-red-400" />
+        <p className="text-red-400 text-lg font-medium">Unable to load weather</p>
+        <p className="text-white/70 text-sm text-center">{error}</p>
       </motion.div>
     );
   }
@@ -80,9 +72,9 @@ export default function CurrentWeather({ data, loading, error }) {
         <WeatherCard className="p-6">
           <h3 className="text-white/80 font-medium mb-4 text-sm uppercase tracking-wider">Details</h3>
           <div className="space-y-0">
-            <DataRow label="Humidity" value={`${current?.humidity}%`} icon="💧" />
-            <DataRow label="Wind Speed" value={`${current?.wind_speed} km/h`} icon="💨" />
-            <DataRow label="Pressure" value={`${current?.pressure} mb`} icon="📊" />
+            <DataRow label="Humidity" value={`${current?.humidity}%`} icon={Droplets} />
+            <DataRow label="Wind Speed" value={`${current?.wind_speed} km/h`} icon={Wind} />
+            <DataRow label="Pressure" value={`${current?.pressure} mb`} icon={Gauge} />
           </div>
         </WeatherCard>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Search } from 'lucide-react';
 import Navbar from './components/Navbar';
 import CurrentWeather from './components/CurrentWeather';
 import HistoricalWeather from './components/HistoricalWeather';
@@ -77,26 +78,29 @@ export default function App() {
           className="mb-8"
         >
           <div className="relative max-w-xl mx-auto">
-            <input
-              type="text"
-              value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e.target.value);
-                setShowSuggestions(true);
-              }}
-              onFocus={() => setShowSuggestions(true)}
-              onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
-              placeholder="Search location..."
-              className="w-full px-5 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 backdrop-blur-lg shadow-xl"
-            />
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => handleSearch(searchInput)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl bg-cyan-500/40 border border-cyan-400/50 text-white text-sm font-medium hover:bg-cyan-500/60 transition-all shadow-neon hover:shadow-neon-hover"
-            >
-              Search
-            </motion.button>
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/50" />
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => {
+                  setSearchInput(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                placeholder="Search location..."
+                className="w-full pl-12 pr-24 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 backdrop-blur-lg shadow-xl"
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleSearch(searchInput)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-xl bg-cyan-500/40 border border-cyan-400/50 text-white text-sm font-medium hover:bg-cyan-500/60 transition-all shadow-neon hover:shadow-neon-hover flex items-center gap-2"
+              >
+                Search
+              </motion.button>
+            </div>
 
             {showSuggestions && (
               <motion.ul

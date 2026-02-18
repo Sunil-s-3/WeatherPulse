@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Calendar, Wind, AlertCircle } from 'lucide-react';
 import WeatherCard, { TempDisplay, DataRow } from './WeatherCard';
+import Loader from './Loader';
 import { getHistoricalWeather } from '../services/api';
 
-export default function HistoricalWeather({ location, onError }) {
+export default function HistoricalWeather({ location }) {
   const [date, setDate] = useState('');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -32,7 +34,6 @@ export default function HistoricalWeather({ location, onError }) {
     } catch (err) {
       const message = err.response?.data?.error?.info || err.message || 'Something went wrong';
       setError(message);
-      onError?.(message);
     } finally {
       setLoading(false);
     }
@@ -49,7 +50,10 @@ export default function HistoricalWeather({ location, onError }) {
       className="space-y-6"
     >
       <WeatherCard className="p-6">
-        <h3 className="text-white font-semibold mb-4">Select Date & Location</h3>
+        <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-cyan-400" />
+          Select Date & Location
+        </h3>
         <div className="flex flex-col sm:flex-row gap-4">
           <input
             type="date"
@@ -70,18 +74,15 @@ export default function HistoricalWeather({ location, onError }) {
         </div>
       </WeatherCard>
 
-      {loading && (
-        <div className="flex justify-center py-12">
-          <div className="w-12 h-12 border-4 border-cyan-400/30 border-t-cyan-400 rounded-full animate-spin" />
-        </div>
-      )}
+      {loading && <Loader message="Fetching historical weather..." />}
 
       {error && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="backdrop-blur-lg bg-red-500/20 border border-red-500/30 rounded-2xl p-6 text-center"
+          className="backdrop-blur-lg bg-red-500/20 border border-red-500/30 rounded-2xl p-6 flex items-center gap-3"
         >
+          <AlertCircle className="w-6 h-6 text-red-400 flex-shrink-0" />
           <p className="text-red-400">{error}</p>
         </motion.div>
       )}
@@ -116,7 +117,8 @@ export default function HistoricalWeather({ location, onError }) {
               </div>
               <div className="space-y-0">
                 <DataRow label="Description" value={historical?.hourly?.[0]?.weather_descriptions?.[0] || historical?.condition || '--'} />
-                <DataRow label="Wind Speed" value={windSpeed != null ? `${windSpeed} km/h` : '--'} icon="💨" />
+                <DataRow label="Wind Speed" value={windSpeed != null ? `${windSpeed} km/h` : '--'} icon={Wind} />
+                <DataRow label="Humidity" value={historical?.hourly?.[0]?.humidity != null ? `${historical.hourly[0].humidity}%` : '--'} />
               </div>
             </div>
           </WeatherCard>
